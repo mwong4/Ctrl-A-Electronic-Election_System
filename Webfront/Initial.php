@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <title>
-    Submission Page
+    Submission
 </title>
 
 <body>
