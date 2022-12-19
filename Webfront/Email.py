@@ -13,7 +13,7 @@ ERROR_ALREADY_EXISTS = "ERROR, the following email has already been used: "
 
 EMAIL_FILTER = "@uwaterloo.ca"
 SENDER = "donotreply.ctrla@gmail.com"
-DEBUG = True
+DEBUG = False
 
 def main():
     email = str(sys.argv[1])
@@ -43,7 +43,7 @@ def main():
     message.attach(package)
 
 
-    if (email != None and EMAIL_FILTER in email) or DEBUG:
+    if (email != None and EMAIL_FILTER in email and email.endswith(EMAIL_FILTER)) or DEBUG:
         with smtplib.SMTP_SSL("smtp.gmail.com", port, context=context) as server:
             server.login(SENDER, password)
             try:
