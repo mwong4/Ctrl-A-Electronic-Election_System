@@ -82,7 +82,6 @@ def reset_table(mydb, table):
     mycursor = mydb.cursor(buffered=True)
     mycursor.execute("DROP TABLE IF EXISTS {}".format(table))
     create_table(mydb, table)
-    print("SUCCESS, {} resetted".format(table))
 
 def insert_email(mydb, email):
     mycursor = mydb.cursor(buffered=True)
@@ -95,9 +94,9 @@ def insert_email(mydb, email):
         val = ("{}".format(email), "{}".format(u_id))
         mycursor.execute(sql, val)
         mydb.commit()
-        print("SUCCESS, record inserted.")
+        return str(u_id)
     else:
-        print("ERROR, EMAIL duplication detected")
+        return "ERROR"
 
 
 def main():
@@ -109,23 +108,6 @@ def main():
 
     # Create a secure SSL context
     context = ssl.create_default_context()
-
-    message = MIMEMultipart("alternative")
-    message["Subject"] = "Ctrl-A Election Ballot"
-    message["From"] = SENDER
-    message["To"] = email
-    html = """\
-    <html>
-        <body>
-            <p>Subject: Ctrl-A Election Ballot<br>
-            This is your custom url to the election site:<br>
-            <a href="https://www.google.com/">https://www.google.com/</a> 
-            </p>
-        </body>
-    </html>
-    """
-    package = MIMEText(html, "html")
-    message.attach(package)
 
     #Connect to databse
     mydb = connect_database('')
@@ -139,10 +121,27 @@ def main():
         if (check_for_item(mydb, 'emails', 'email', email)):
             response = ERROR_ALREADY_EXISTS
         else:
-            insert_email(mydb, email)
+            id_code = insert_email(mydb, email)
             with smtplib.SMTP_SSL("smtp.gmail.com", port, context=context) as server:
                 server.login(SENDER, password)
                 try:
+                    message = MIMEMultipart("alternative")
+                    message["Subject"] = "Ctrl-A Election Ballot"
+                    message["From"] = SENDER
+                    message["To"] = email
+                    html = """\
+                    <html>
+                        <body>
+                            <p>Subject: Ctrl-A Election Ballot<br>
+                            This is your custom url to the election site:<br>
+                            <a href="http://localhost/Ballot/Ballot_Verification.php?u_id={}">http://localhost/Ballot/Ballot_Verification.php?u_id={}</a> 
+                            </p>
+                        </body>
+                    </html>
+                    """.format(id_code, id_code)
+                    package = MIMEText(html, "html")
+                    message.attach(package)
+
                     server.sendmail(SENDER, email, message.as_string())
                     response = SUCCESS_RESPONSE
                 except SMTPException as e:

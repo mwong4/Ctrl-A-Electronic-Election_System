@@ -77,8 +77,10 @@ def insert_email(mydb, email):
         mycursor.execute(sql, val)
         mydb.commit()
         print("SUCCESS, record inserted.")
+        return u_id
     else:
         print("ERROR, EMAIL duplication detected")
+        return "ERROR"
 
 def check_args(actual, expected):
     if (actual == expected):
