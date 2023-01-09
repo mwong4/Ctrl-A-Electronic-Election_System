@@ -89,7 +89,6 @@ def check_args(actual, expected):
         return False
 
 
-
 def main():
     if (len(sys.argv) == 1):
         print("ERROR, No command given")
