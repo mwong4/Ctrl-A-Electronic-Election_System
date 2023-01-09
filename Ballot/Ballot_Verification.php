@@ -12,12 +12,11 @@
 
 $u_id = $_GET['u_id'];
 $output = shell_exec("python Verification.py $u_id");
-echo ("output: |$output|");
 
 if ($output == "True\n") {
     header("Location: Ballot.php");
 } else {
-    echo "ERROR, Ballot id does not exist";
+    echo "ERROR, Ballot id does not exist. Please verify email first";
 }
 
 ?>

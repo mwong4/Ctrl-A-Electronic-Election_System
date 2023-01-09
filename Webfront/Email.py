@@ -136,7 +136,7 @@ def main():
 
     if (email != None and EMAIL_FILTER in email and email.endswith(EMAIL_FILTER)) or DEBUG:
 
-        if (check_for_item(mydb, 'email', email)):
+        if (check_for_item(mydb, 'emails', 'email', email)):
             response = ERROR_ALREADY_EXISTS
         else:
             insert_email(mydb, email)
