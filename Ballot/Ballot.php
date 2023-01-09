@@ -4,7 +4,6 @@
     Ballot
 </title>
 
-<?php
-
-$output = $_GET['u_id'];
-?>
+<body>
+    <h2>This is the ballot!</h2>
+</body>
