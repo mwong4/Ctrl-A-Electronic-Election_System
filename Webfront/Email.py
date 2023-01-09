@@ -39,7 +39,7 @@ def connect_database(database):
         )
     return mydb
 
-def databse_exists(mydb, id):
+def database_exists(mydb, id):
     mycursor = mydb.cursor(buffered=True)
     mycursor.execute("SHOW DATABASES")
 
@@ -50,12 +50,9 @@ def databse_exists(mydb, id):
 
 
 def create_database(mydb, id):
-    if (not databse_exists(mydb, id)):
+    if (not database_exists(mydb, id)):
         mycursor = mydb.cursor(buffered=True)
         mycursor.execute("CREATE DATABASE {}".format(id))
-        return mycursor
-    return mydb.cursor()
-
 
 def table_exists(mydb, name):
     mycursor = mydb.cursor(buffered=True)
@@ -66,12 +63,10 @@ def table_exists(mydb, name):
             return True
     return False
 
-
 def create_table(mydb, name):
     mycursor = mydb.cursor(buffered=True)
     if (not table_exists(mydb, name)):
         mycursor.execute("CREATE TABLE {} (email VARCHAR(255), u_id VARCHAR(255))".format(name))
-
 
 def check_for_item(mydb, dbname, type, item):
     mycursor = mydb.cursor(buffered=True)
@@ -83,13 +78,11 @@ def check_for_item(mydb, dbname, type, item):
         return True
     return False
 
-
 def reset_table(mydb, table):
     mycursor = mydb.cursor(buffered=True)
     mycursor.execute("DROP TABLE IF EXISTS {}".format(table))
     create_table(mydb, table)
     print("SUCCESS, {} resetted".format(table))
-
 
 def insert_email(mydb, email):
     mycursor = mydb.cursor(buffered=True)
@@ -102,7 +95,7 @@ def insert_email(mydb, email):
         val = ("{}".format(email), "{}".format(u_id))
         mycursor.execute(sql, val)
         mydb.commit()
-        print(mycursor.rowcount, "SUCCESS, record inserted.")
+        print("SUCCESS, record inserted.")
     else:
         print("ERROR, EMAIL duplication detected")
 

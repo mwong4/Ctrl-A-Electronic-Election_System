@@ -77,15 +77,23 @@ def insert_email(mydb, email):
         val = ("{}".format(email), "{}".format(u_id))
         mycursor.execute(sql, val)
         mydb.commit()
-        print(mycursor.rowcount, "SUCCESS, record inserted.")
+        print("SUCCESS, record inserted.")
     else:
         print("ERROR, EMAIL duplication detected")
+
+def check_args(actual, expected):
+    if (actual == expected):
+        return True
+    else:
+        print("ERROR, not enough parameters provided")
+        return False
+
 
 
 def main():
     if (len(sys.argv) == 1):
         print("ERROR, No command given")
-        raise
+        exit()
 
     command = str(sys.argv[1])
 
@@ -98,19 +106,23 @@ def main():
         $ help
         """)
     else:
-        if (len(sys.argv) <= 2):
-            print("ERROR, not enough parameters provided")
-            raise
-        
         if (command == 'create_database'):
+            if not check_args(len(sys.argv), 3): 
+                exit()
             create_database(mydb, sys.argv[2])
         elif (command == 'create_table'):
+            if not check_args(len(sys.argv), 4): 
+                exit()
             mydb = connect_database(sys.argv[2])
             create_table(mydb, sys.argv[3])
         elif (command == 'reset_table'):
+            if not check_args(len(sys.argv), 4): 
+                exit()
             mydb = connect_database(sys.argv[2])
             reset_table(mydb, sys.argv[3])
         elif (command == 'insert_email'):
+            if not check_args(len(sys.argv), 4): 
+                exit()
             mydb = connect_database(sys.argv[2])
             insert_email(mydb, sys.argv[3])
         else:
