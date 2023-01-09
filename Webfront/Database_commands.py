@@ -21,7 +21,7 @@ def connect_database(database):
         )
     return mydb
 
-def databse_exists(mydb, id):
+def database_exists(mydb, id):
     mycursor = mydb.cursor(buffered=True)
     mycursor.execute("SHOW DATABASES")
 
@@ -32,12 +32,9 @@ def databse_exists(mydb, id):
 
 
 def create_database(mydb, id):
-    if (not databse_exists(mydb, id)):
+    if (not database_exists(mydb, id)):
         mycursor = mydb.cursor(buffered=True)
         mycursor.execute("CREATE DATABASE {}".format(id))
-        return mycursor
-    return mydb.cursor()
-
 
 def table_exists(mydb, name):
     mycursor = mydb.cursor(buffered=True)
@@ -48,16 +45,14 @@ def table_exists(mydb, name):
             return True
     return False
 
-
 def create_table(mydb, name):
     mycursor = mydb.cursor(buffered=True)
     if (not table_exists(mydb, name)):
         mycursor.execute("CREATE TABLE {} (email VARCHAR(255), u_id VARCHAR(255))".format(name))
 
-
-def check_for_item(mydb, type, item):
+def check_for_item(mydb, dbname, type, item):
     mycursor = mydb.cursor(buffered=True)
-    sql = "SELECT * FROM emails WHERE {} ='{}'".format(type, item)
+    sql = "SELECT * FROM {} WHERE {} ='{}'".format(dbname, type, item)
     mycursor.execute(sql)
     myresult = mycursor.fetchall()
 
@@ -65,19 +60,17 @@ def check_for_item(mydb, type, item):
         return True
     return False
 
-
 def reset_table(mydb, table):
     mycursor = mydb.cursor(buffered=True)
     mycursor.execute("DROP TABLE IF EXISTS {}".format(table))
     create_table(mydb, table)
     print("SUCCESS, {} resetted".format(table))
 
-
 def insert_email(mydb, email):
     mycursor = mydb.cursor(buffered=True)
-    if(not check_for_item(mydb, 'email', email)):
+    if(not check_for_item(mydb, 'emails', 'email', email)):
         u_id = uuid.uuid4()
-        while (check_for_item(mydb, 'u_id', u_id)):
+        while (check_for_item(mydb, 'emails', 'u_id', u_id)):
             u_id = uuid.uuid4()
 
         sql = "INSERT INTO emails (email, u_id) VALUES (%s, %s)"
@@ -89,35 +82,39 @@ def insert_email(mydb, email):
         print("ERROR, EMAIL duplication detected")
 
 
-#Commands:
-#
-#connect_database
-#create_database
-#select_table
-#reset_table
-#insert_email
-
 def main():
-    command = str(sys.argv[1])
-    input = []
-    counter = 0
-
-    if (len(sys.argv) == 0):
+    if (len(sys.argv) == 1):
         print("ERROR, No command given")
         raise
 
-    for item in sys.argv:
-        if counter == 0:
-            command = str(item)
+    command = str(sys.argv[1])
+
+    if (command == 'help'):
+        print("""
+        $ create_database [db_id]
+        $ create_table [db_id] [table_name]
+        $ reset_table [db_id] [table_name]
+        $ insert_email [db_id] [email (single string)]
+        $ help
+        """)
+    else:
+        if (len(sys.argv) <= 2):
+            print("ERROR, not enough parameters provided")
+            raise
+        
+        if (command == 'create_database'):
+            create_database(mydb, sys.argv[2])
+        elif (command == 'create_table'):
+            mydb = connect_database(sys.argv[2])
+            create_table(mydb, sys.argv[3])
+        elif (command == 'reset_table'):
+            mydb = connect_database(sys.argv[2])
+            reset_table(mydb, sys.argv[3])
+        elif (command == 'insert_email'):
+            mydb = connect_database(sys.argv[2])
+            insert_email(mydb, sys.argv[3])
         else:
-            input.insert(item)
-
-    if (command == ''):
-        
-    elif (command == ''):
-        
-
-
+            print("No command found")
 
 
 if __name__ == "__main__":

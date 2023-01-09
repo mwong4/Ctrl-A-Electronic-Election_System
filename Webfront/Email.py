@@ -48,12 +48,14 @@ def databse_exists(mydb, id):
             return True
     return False
 
+
 def create_database(mydb, id):
     if (not databse_exists(mydb, id)):
         mycursor = mydb.cursor(buffered=True)
         mycursor.execute("CREATE DATABASE {}".format(id))
         return mycursor
     return mydb.cursor()
+
 
 def table_exists(mydb, name):
     mycursor = mydb.cursor(buffered=True)
@@ -64,14 +66,16 @@ def table_exists(mydb, name):
             return True
     return False
 
+
 def create_table(mydb, name):
     mycursor = mydb.cursor(buffered=True)
     if (not table_exists(mydb, name)):
         mycursor.execute("CREATE TABLE {} (email VARCHAR(255), u_id VARCHAR(255))".format(name))
 
-def check_for_item(mydb, type, item):
+
+def check_for_item(mydb, dbname, type, item):
     mycursor = mydb.cursor(buffered=True)
-    sql = "SELECT * FROM emails WHERE {} ='{}'".format(type, item)
+    sql = "SELECT * FROM {} WHERE {} ='{}'".format(dbname, type, item)
     mycursor.execute(sql)
     myresult = mycursor.fetchall()
 
@@ -79,17 +83,19 @@ def check_for_item(mydb, type, item):
         return True
     return False
 
+
 def reset_table(mydb, table):
     mycursor = mydb.cursor(buffered=True)
     mycursor.execute("DROP TABLE IF EXISTS {}".format(table))
     create_table(mydb, table)
     print("SUCCESS, {} resetted".format(table))
 
+
 def insert_email(mydb, email):
     mycursor = mydb.cursor(buffered=True)
-    if(not check_for_item(mydb, 'email', email)):
+    if(not check_for_item(mydb, 'emails', 'email', email)):
         u_id = uuid.uuid4()
-        while (check_for_item(mydb, 'u_id', u_id)):
+        while (check_for_item(mydb, 'emails', 'u_id', u_id)):
             u_id = uuid.uuid4()
 
         sql = "INSERT INTO emails (email, u_id) VALUES (%s, %s)"
