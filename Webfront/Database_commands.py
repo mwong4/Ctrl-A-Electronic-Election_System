@@ -1,13 +1,15 @@
 import mysql.connector
 import uuid
 import sys
+from dotenv import load_dotenv
+import os
 
 def connect_database(database):
-    if (database == ""):
+    if (database == ""): #Default
         mydb = mysql.connector.connect(
             host="127.0.0.1",
             user="root",
-            password="",
+            password=os.getenv('DB_PASSWORD'),
             port="3306"
         )
     else:
