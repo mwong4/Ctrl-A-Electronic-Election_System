@@ -47,7 +47,7 @@ def table_exists(mydb, name):
 def create_table(mydb, name):
     mycursor = mydb.cursor(buffered=True)
     if (not table_exists(mydb, name)):
-        mycursor.execute("CREATE TABLE {} (email VARCHAR(255), u_id VARCHAR(255))".format(name))
+        mycursor.execute("CREATE TABLE {} (email VARCHAR(255), u_id VARCHAR(255), voted VARCHAR(255))".format(name))
 
 def check_for_item(mydb, dbname, type, item):
     mycursor = mydb.cursor(buffered=True)
@@ -65,21 +65,19 @@ def reset_table(mydb, table):
     create_table(mydb, table)
     print("SUCCESS, {} resetted".format(table))
 
-def insert_email(mydb, email):
+def insert_student(mydb, email):
     mycursor = mydb.cursor(buffered=True)
     if(not check_for_item(mydb, 'emails', 'email', email)):
         u_id = uuid.uuid4()
         while (check_for_item(mydb, 'emails', 'u_id', u_id)):
             u_id = uuid.uuid4()
 
-        sql = "INSERT INTO emails (email, u_id) VALUES (%s, %s)"
-        val = ("{}".format(email), "{}".format(u_id))
+        sql = "INSERT INTO emails (email, u_id, voted) VALUES (%s, %s, %s)"
+        val = ("{}".format(email), "{}".format(u_id), "False")
         mycursor.execute(sql, val)
         mydb.commit()
-        print("SUCCESS, record inserted.")
-        return u_id
+        return str(u_id)
     else:
-        print("ERROR, EMAIL duplication detected")
         return "ERROR"
 
 def check_args(actual, expected):
@@ -89,6 +87,24 @@ def check_args(actual, expected):
         print("ERROR, not enough parameters provided")
         return False
 
+def set_by_u_id(mydb, table, u_id, type, val):
+    mycursor = mydb.cursor()
+    mycursor.execute("UPDATE {} SET {} = '{}' WHERE u_id = '{}'".format(table, type, val, u_id))
+    mydb.commit()
+
+def get_by_u_id(mydb, table, u_id, type):
+    mycursor = mydb.cursor()
+    mycursor.execute("SELECT * FROM {} WHERE u_id='{}'".format(table, u_id))
+    myresult = mycursor.fetchall()
+    
+    for x in myresult:
+        if (type == 'email'):
+            return x[0]
+        elif (type == 'u_id'):
+            return x[1]
+        elif (type == 'voted'):
+            return x[2]
+
 
 def main():
     if (len(sys.argv) == 1):
@@ -96,6 +112,8 @@ def main():
         exit()
 
     command = str(sys.argv[1])
+    mydb = connect_database('ctrl_a')
+    print(get_by_u_id(mydb, 'emails', '9a516c58-1cc6-4b44-8621-db38def392a5', 'voted'))
 
     if (command == 'help'):
         print("""
@@ -103,6 +121,8 @@ def main():
         $ create_table [db_id] [table_name]
         $ reset_table [db_id] [table_name]
         $ insert_email [db_id] [email (single string)]
+        $ set [db_id] [table_name] [u_id] [type] [val]
+        $ get [db_id] [table_name] [u_id] [type]
         $ help
         """)
     else:
@@ -124,7 +144,17 @@ def main():
             if not check_args(len(sys.argv), 4): 
                 exit()
             mydb = connect_database(sys.argv[2])
-            insert_email(mydb, sys.argv[3])
+            id = insert_student(mydb, sys.argv[3])
+        elif (command == 'set'):
+            if not check_args(len(sys.argv), 7): 
+                exit()
+            mydb = connect_database(sys.argv[2])
+            set_by_u_id(mydb, sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6])
+        elif (command == 'get'):
+            if not check_args(len(sys.argv), 6): 
+                exit()
+            mydb = connect_database(sys.argv[2])
+            print(get_by_u_id(mydb, sys.argv[3], sys.argv[4], sys.argv[5]))
         else:
             print("No command found")
 

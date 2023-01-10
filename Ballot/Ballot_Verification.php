@@ -16,7 +16,7 @@ $output = shell_exec("python Verification.py $u_id");
 if ($output == "True\n") {
     header("Location: Ballot.php");
 } else {
-    echo "ERROR, Ballot id does not exist. Please verify email first";
+    echo "ERROR, Ballot id not found in database, or student has already voted.";
 }
 
 ?>

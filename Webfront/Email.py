@@ -66,7 +66,7 @@ def table_exists(mydb, name):
 def create_table(mydb, name):
     mycursor = mydb.cursor(buffered=True)
     if (not table_exists(mydb, name)):
-        mycursor.execute("CREATE TABLE {} (email VARCHAR(255), u_id VARCHAR(255))".format(name))
+        mycursor.execute("CREATE TABLE {} (email VARCHAR(255), u_id VARCHAR(255), voted VARCHAR(255))".format(name))
 
 def check_for_item(mydb, dbname, type, item):
     mycursor = mydb.cursor(buffered=True)
@@ -83,15 +83,15 @@ def reset_table(mydb, table):
     mycursor.execute("DROP TABLE IF EXISTS {}".format(table))
     create_table(mydb, table)
 
-def insert_email(mydb, email):
+def insert_student(mydb, email):
     mycursor = mydb.cursor(buffered=True)
     if(not check_for_item(mydb, 'emails', 'email', email)):
         u_id = uuid.uuid4()
         while (check_for_item(mydb, 'emails', 'u_id', u_id)):
             u_id = uuid.uuid4()
 
-        sql = "INSERT INTO emails (email, u_id) VALUES (%s, %s)"
-        val = ("{}".format(email), "{}".format(u_id))
+        sql = "INSERT INTO emails (email, u_id, voted) VALUES (%s, %s, %s)"
+        val = ("{}".format(email), "{}".format(u_id), "False")
         mycursor.execute(sql, val)
         mydb.commit()
         return str(u_id)
@@ -121,7 +121,7 @@ def main():
         if (check_for_item(mydb, 'emails', 'email', email)):
             response = ERROR_ALREADY_EXISTS
         else:
-            id_code = insert_email(mydb, email)
+            id_code = insert_student(mydb, email)
             with smtplib.SMTP_SSL("smtp.gmail.com", port, context=context) as server:
                 server.login(SENDER, password)
                 try:
