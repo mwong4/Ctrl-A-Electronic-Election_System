@@ -1,0 +1,18 @@
+{
+    "president": {
+        "Joel": {
+            "description": "Hi, my name is Joel. I code."
+        },
+        "Sasha": {
+            "description": "Hello, my name is Sasha. I like art."
+        }
+    },
+    "treasurer": {
+        "K": {
+            "description": "Hey, I'm K. I really like anime... and maybe money."
+        }
+    },
+    "promotion manager": {
+
+    }
+}
