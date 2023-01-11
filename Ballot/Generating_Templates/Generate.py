@@ -15,9 +15,16 @@ def main():
     template = templateEnv.get_template(TEMPLATE_FILE)
     outputText = template.render(data=data)
 
-    print(outputText)
-    
+    try:
+        print("Clearig old ballots")
+        os.remove("Ballot.php")
+    except:
+        print("Generating...")
+    out_file = open("Ballot.php", "a")
+    out_file.write(outputText)
+    out_file.close()
     source_file.close()
+    print("Ballot generated!")
 
 
 if __name__ == "__main__":
