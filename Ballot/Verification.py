@@ -52,6 +52,7 @@ def get_by_u_id(mydb, table, u_id, type):
 
 
 def main():
+    load_dotenv()
     u_id = str(sys.argv[1])
 
     try:

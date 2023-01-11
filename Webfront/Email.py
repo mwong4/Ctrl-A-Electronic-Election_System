@@ -103,6 +103,7 @@ def insert_student(mydb, email):
 
 
 def main():
+    load_dotenv()
     email = str(sys.argv[1])
 
     load_dotenv()

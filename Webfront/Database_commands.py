@@ -3,6 +3,7 @@ import uuid
 import sys
 from dotenv import load_dotenv
 import os
+import getpass
 
 def connect_database(database):
     if (database == ""): #Default
@@ -112,6 +113,7 @@ def get_by_u_id(mydb, table, u_id, type):
 
 
 def main():
+    load_dotenv()
     if (len(sys.argv) == 1):
         print("ERROR, No command given")
         exit()
@@ -131,37 +133,43 @@ def main():
         $ help
         """)
     else:
-        if (command == 'create_database'):
-            if not check_args(len(sys.argv), 3): 
-                exit()
-            create_database(mydb, sys.argv[2])
-        elif (command == 'create_table'):
-            if not check_args(len(sys.argv), 4): 
-                exit()
-            mydb = connect_database(sys.argv[2])
-            create_table(mydb, sys.argv[3])
-        elif (command == 'reset_table'):
-            if not check_args(len(sys.argv), 4): 
-                exit()
-            mydb = connect_database(sys.argv[2])
-            reset_table(mydb, sys.argv[3])
-        elif (command == 'insert_email'):
-            if not check_args(len(sys.argv), 4): 
-                exit()
-            mydb = connect_database(sys.argv[2])
-            id = insert_student(mydb, sys.argv[3])
-        elif (command == 'set'):
-            if not check_args(len(sys.argv), 7): 
-                exit()
-            mydb = connect_database(sys.argv[2])
-            set_by_u_id(mydb, sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6])
-        elif (command == 'get'):
-            if not check_args(len(sys.argv), 6): 
-                exit()
-            mydb = connect_database(sys.argv[2])
-            print(get_by_u_id(mydb, sys.argv[3], sys.argv[4], sys.argv[5]))
+        passwd = getpass.getpass("Enter CLI Password: ")
+        real_pass =  os.getenv('CLI_PASSWORD')
+
+        if(passwd == real_pass):
+            if (command == 'create_database'):
+                if not check_args(len(sys.argv), 3): 
+                    exit()
+                create_database(mydb, sys.argv[2])
+            elif (command == 'create_table'):
+                if not check_args(len(sys.argv), 4): 
+                    exit()
+                mydb = connect_database(sys.argv[2])
+                create_table(mydb, sys.argv[3])
+            elif (command == 'reset_table'):
+                if not check_args(len(sys.argv), 4): 
+                    exit()
+                mydb = connect_database(sys.argv[2])
+                reset_table(mydb, sys.argv[3])
+            elif (command == 'insert_email'):
+                if not check_args(len(sys.argv), 4): 
+                    exit()
+                mydb = connect_database(sys.argv[2])
+                id = insert_student(mydb, sys.argv[3])
+            elif (command == 'set'):
+                if not check_args(len(sys.argv), 7): 
+                    exit()
+                mydb = connect_database(sys.argv[2])
+                set_by_u_id(mydb, sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6])
+            elif (command == 'get'):
+                if not check_args(len(sys.argv), 6): 
+                    exit()
+                mydb = connect_database(sys.argv[2])
+                print(get_by_u_id(mydb, sys.argv[3], sys.argv[4], sys.argv[5]))
+            else:
+                print("No command found")
         else:
-            print("No command found")
+            print("ERROR, password is incorrect")
 
 
 if __name__ == "__main__":
