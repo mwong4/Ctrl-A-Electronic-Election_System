@@ -111,6 +111,12 @@ def get_by_u_id(mydb, table, u_id, type):
         elif (type == 'voted'):
             return x[2]
 
+def count_all(mydb, table, category, person):
+    mycursor = mydb.cursor()
+    mycursor.execute("SELECT * FROM {} WHERE category='{}' AND person='{}'".format(table, category, person))
+    result = mycursor.fetchall()
+    return len(result)
+
 
 def main():
     load_dotenv()
@@ -120,7 +126,6 @@ def main():
 
     command = str(sys.argv[1])
     mydb = connect_database('ctrl_a')
-    print(get_by_u_id(mydb, 'emails', '9a516c58-1cc6-4b44-8621-db38def392a5', 'voted'))
 
     if (command == 'help'):
         print("""
@@ -130,6 +135,7 @@ def main():
         $ insert_email [db_id] [email (single string)]
         $ set [db_id] [table_name] [u_id] [type] [val]
         $ get [db_id] [table_name] [u_id] [type]
+        $ count [db_id] [table_name] [filter] [val]
         $ help
         """)
     else:
@@ -166,6 +172,11 @@ def main():
                     exit()
                 mydb = connect_database(sys.argv[2])
                 print(get_by_u_id(mydb, sys.argv[3], sys.argv[4], sys.argv[5]))
+            elif (command == 'count'):
+                if not check_args(len(sys.argv), 6): 
+                    exit()
+                mydb = connect_database(sys.argv[2])
+                print(count_all(mydb, sys.argv[3], sys.argv[4], sys.argv[5]))
             else:
                 print("No command found")
         else:
