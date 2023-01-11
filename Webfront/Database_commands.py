@@ -49,7 +49,10 @@ def table_exists(mydb, name):
 def create_table(mydb, name):
     mycursor = mydb.cursor(buffered=True)
     if (not table_exists(mydb, name)):
-        mycursor.execute("CREATE TABLE {} (email VARCHAR(255), u_id VARCHAR(255), voted VARCHAR(255))".format(name))
+        if (name ==  'emails'):
+            mycursor.execute("CREATE TABLE emails (email VARCHAR(255), u_id VARCHAR(255), voted VARCHAR(255))")
+        elif (name  == 'votes'):
+            mycursor.execute("CREATE TABLE votes (category VARCHAR(255), person VARCHAR(255), u_id VARCHAR(255))")
 
 def check_for_item(mydb, dbname, type, item):
     mycursor = mydb.cursor(buffered=True)

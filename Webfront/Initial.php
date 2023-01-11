@@ -12,8 +12,3 @@
     </form>
 </body>
 </html>
-
-<?php
-
-$output = shell_exec("python Email.py");
-?>
