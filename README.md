@@ -78,3 +78,9 @@ SOURCE_FILE=<../Ballot/Generating_Templates/input.json>
 Reminder that the source_file is the same json file used in the ballot generation
 
 ## Usgae
+
+There are 3 main components to the systme: The initial page, the ballot and the results page.
+
+The initial page is where the end user, the voter, goes to submit their waterloo email in order to confirm their identity
+The ballot page is then sent to each user via email. This ballot double checks the user's identity, and allows them to vote
+The results page is where the user can go to check the present results of the election.
