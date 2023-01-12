@@ -6,9 +6,6 @@ import os
 import getpass
 import json
 
-# Source file for ballot generation
-SOURCE_FILE='../Ballot/Generating_Templates/input.json'
-
 # Connects to database, connecting to localhost by default
 def connect_database(database):
     if (database == ""): #Default
@@ -36,6 +33,10 @@ def count_all(mydb, table, category, person):
     return len(result)
 
 def main():
+    load_dotenv()
+    # Source file for ballot generation
+    SOURCE_FILE=str(os.getenv('SOURCE_FILE'))
+
     mydb = connect_database('ctrl_a') # Connet to database
     source_file = open(SOURCE_FILE)
     data = json.load(source_file) # Load json

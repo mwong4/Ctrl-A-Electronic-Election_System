@@ -112,7 +112,6 @@ def main():
     load_dotenv()
     email = str(sys.argv[1]) # Gets email fro input
 
-    load_dotenv()
     port = 465  # For SSL
     password = os.getenv('APP_PASSWORD')
 

@@ -66,5 +66,15 @@ Now, the ballot is ready!
 
 ###### Script configurations
 
+In this current location (project folder, where README is located), create a .env file and fill in the following fields:
+```
+.env
+
+APP_PASSWORD=<do not reply email password>
+CLI_PASSWORD=<set a password for the database commands>
+DB_PASSWORD=<fill in the database password configured on xampp, default is empty>
+SOURCE_FILE=<../Ballot/Generating_Templates/input.json>
+```
+Reminder that the source_file is the same json file used in the ballot generation
 
 ## Usgae
