@@ -4,6 +4,7 @@ import sys
 from dotenv import load_dotenv
 import os
 
+# Connects to database, connecting to localhost by default
 def connect_database(database):
     if (database == ""): #Default
         mydb = mysql.connector.connect(
@@ -22,6 +23,7 @@ def connect_database(database):
         )
     return mydb
 
+# Check if an item of type and of value item
 def check_for_item(mydb, tablename, type, item):
     mycursor = mydb.cursor(buffered=True)
     sql = "SELECT * FROM {} WHERE {} ='{}'".format(tablename, type, item)
@@ -32,11 +34,13 @@ def check_for_item(mydb, tablename, type, item):
         return True
     return False
 
+# Setter for any database value, using u_id to query
 def set_by_u_id(mydb, table, u_id, type, val):
     mycursor = mydb.cursor()
     mycursor.execute("UPDATE {} SET {} = '{}' WHERE u_id = '{}'".format(table, type, val, u_id))
     mydb.commit()
 
+# getter for any database value, using u_id to query
 def get_by_u_id(mydb, table, u_id, type):
     mycursor = mydb.cursor()
     mycursor.execute("SELECT * FROM {} WHERE u_id='{}'".format(table, u_id))
@@ -53,10 +57,10 @@ def get_by_u_id(mydb, table, u_id, type):
 
 def main():
     load_dotenv()
-    u_id = str(sys.argv[1])
+    u_id = str(sys.argv[1]) # Get u_id from input
 
     try:
-        mydb = connect_database('ctrl_a')
+        mydb = connect_database('ctrl_a') # Below: Make sure user registered and has not voted yet
         if (check_for_item(mydb, 'emails', 'u_id', u_id) and get_by_u_id(mydb, 'emails', u_id, 'voted') == "False"):
             print("True")
         else:

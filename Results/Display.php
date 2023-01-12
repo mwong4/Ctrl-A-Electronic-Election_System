@@ -9,6 +9,6 @@
 </body>
 
 <?php
-  $result = exec("python Results.py");
+  $result = exec("python Results.py"); //calls back end to get current results, then displays them
   echo $result;
 ?>

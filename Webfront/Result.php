@@ -12,12 +12,13 @@
 
 <?php
 
+//gets email from previous page, formwards this to back end to be processed
 $input_email = (array_key_exists('EMAIL', $_POST)) ? $_POST['EMAIL'] : "";
 $result = exec("python Email.py $input_email");
 
-echo $result;
+echo $result; //prints result/error message
 
 $_POST['EMAIL'] = NULL;
-header( "refresh:10;url=Initial.php" );
+header( "refresh:10;url=Initial.php" ); //forwards the user back to submission page
 
 ?>

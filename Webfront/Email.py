@@ -20,7 +20,7 @@ EMAIL_FILTER = "@uwaterloo.ca"
 SENDER = "donotreply.ctrla@gmail.com"
 DEBUG = False
 
-
+# Connects to database, connecting to localhost by default
 def connect_database(database):
     if (database == ""): #Default
         mydb = mysql.connector.connect(
@@ -39,6 +39,7 @@ def connect_database(database):
         )
     return mydb
 
+# Querries if a database already exists
 def database_exists(mydb, id):
     mycursor = mydb.cursor(buffered=True)
     mycursor.execute("SHOW DATABASES")
@@ -48,12 +49,13 @@ def database_exists(mydb, id):
             return True
     return False
 
-
+# Creates a database, if one does not exist
 def create_database(mydb, id):
     if (not database_exists(mydb, id)):
         mycursor = mydb.cursor(buffered=True)
         mycursor.execute("CREATE DATABASE {}".format(id))
 
+# Querries if a table already exists
 def table_exists(mydb, name):
     mycursor = mydb.cursor(buffered=True)
     mycursor.execute("SHOW TABLES")
@@ -63,6 +65,7 @@ def table_exists(mydb, name):
             return True
     return False
 
+# Creates a table, if one does not exist. Two options, emails table or votes table
 def create_table(mydb, name):
     mycursor = mydb.cursor(buffered=True)
     if (not table_exists(mydb, name)):
@@ -71,6 +74,7 @@ def create_table(mydb, name):
         elif (name  == 'votes'):
             mycursor.execute("CREATE TABLE votes (category VARCHAR(255), person VARCHAR(255), u_id VARCHAR(255))")
 
+# Check if an item of type and of value item
 def check_for_item(mydb, dbname, type, item):
     mycursor = mydb.cursor(buffered=True)
     sql = "SELECT * FROM {} WHERE {} ='{}'".format(dbname, type, item)
@@ -81,21 +85,23 @@ def check_for_item(mydb, dbname, type, item):
         return True
     return False
 
+# Drops, then recreates a table
 def reset_table(mydb, table):
     mycursor = mydb.cursor(buffered=True)
     mycursor.execute("DROP TABLE IF EXISTS {}".format(table))
     create_table(mydb, table)
 
+# Specifically designed to insert a student
 def insert_student(mydb, email):
     mycursor = mydb.cursor(buffered=True)
     if(not check_for_item(mydb, 'emails', 'email', email)):
         u_id = uuid.uuid4()
         while (check_for_item(mydb, 'emails', 'u_id', u_id)):
-            u_id = uuid.uuid4()
+            u_id = uuid.uuid4() # Generate unique ID
 
         sql = "INSERT INTO emails (email, u_id, voted) VALUES (%s, %s, %s)"
         val = ("{}".format(email), "{}".format(u_id), "False")
-        mycursor.execute(sql, val)
+        mycursor.execute(sql, val) # Add to database
         mydb.commit()
         return str(u_id)
     else:
@@ -104,7 +110,7 @@ def insert_student(mydb, email):
 
 def main():
     load_dotenv()
-    email = str(sys.argv[1])
+    email = str(sys.argv[1]) # Gets email fro input
 
     load_dotenv()
     port = 465  # For SSL
@@ -113,23 +119,23 @@ def main():
     # Create a secure SSL context
     context = ssl.create_default_context()
 
-    #Connect to databse
+    # Connect to databse
     mydb = connect_database('')
     create_database(mydb, 'ctrl_a')
     mydb = connect_database('ctrl_a')
     create_table(mydb, 'emails')
 
-
+    # Check that email is a waterloo one
     if (email != None and EMAIL_FILTER in email and email.endswith(EMAIL_FILTER)) or DEBUG:
-
+        # Check if account has been registered in database yet
         if (check_for_item(mydb, 'emails', 'email', email)):
             response = ERROR_ALREADY_EXISTS
         else:
             id_code = insert_student(mydb, email)
-            with smtplib.SMTP_SSL("smtp.gmail.com", port, context=context) as server:
+            with smtplib.SMTP_SSL("smtp.gmail.com", port, context=context) as server: # Login and prepare to send email
                 server.login(SENDER, password)
                 try:
-                    message = MIMEMultipart("alternative")
+                    message = MIMEMultipart("alternative") # Message template
                     message["Subject"] = "Ctrl-A Election Ballot"
                     message["From"] = SENDER
                     message["To"] = email
@@ -142,14 +148,14 @@ def main():
                             </p>
                         </body>
                     </html>
-                    """.format(id_code, id_code)
+                    """.format(id_code, id_code) #Important! The above has the email with the u_id embedded in the URL
                     package = MIMEText(html, "html")
                     message.attach(package)
 
-                    server.sendmail(SENDER, email, message.as_string())
+                    server.sendmail(SENDER, email, message.as_string()) # Send Email
                     response = SUCCESS_RESPONSE
                 except SMTPException as e:
-                    error_code = e.smtp_code
+                    error_code = e.smtp_code # Display error codes, if failed
                     error_message = e.smtp_error
                     if DEBUG:
                         response = "<" + error_code + "> " + error_message + " || " + ERROR_DND

@@ -6,8 +6,10 @@ import os
 import getpass
 import json
 
+# Source file for ballot generation
 SOURCE_FILE='../Ballot/Generating_Templates/input.json'
 
+# Connects to database, connecting to localhost by default
 def connect_database(database):
     if (database == ""): #Default
         mydb = mysql.connector.connect(
@@ -26,6 +28,7 @@ def connect_database(database):
         )
     return mydb
 
+#Count the occurances of a category of value person
 def count_all(mydb, table, category, person):
     mycursor = mydb.cursor()
     mycursor.execute("SELECT * FROM {} WHERE category='{}' AND person='{}'".format(table, category, person))
@@ -33,12 +36,13 @@ def count_all(mydb, table, category, person):
     return len(result)
 
 def main():
-    mydb = connect_database('ctrl_a')
+    mydb = connect_database('ctrl_a') # Connet to database
     source_file = open(SOURCE_FILE)
-    data = json.load(source_file)
+    data = json.load(source_file) # Load json
 
     output_dict = {}
 
+    # parse json data, finding corresponding SQL data and embeding into a dictionary
     for category in data:
         internal_dict = {}
         for person in data[category]:

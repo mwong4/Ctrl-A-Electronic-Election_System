@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 import os
 import json
 
-
+# Connects to database, connecting to localhost by default
 def connect_database(database):
     if (database == ""): #Default
         mydb = mysql.connector.connect(
@@ -24,6 +24,7 @@ def connect_database(database):
         )
     return mydb
 
+# Querries if a database already exists
 def database_exists(mydb, id):
     mycursor = mydb.cursor(buffered=True)
     mycursor.execute("SHOW DATABASES")
@@ -33,12 +34,13 @@ def database_exists(mydb, id):
             return True
     return False
 
-
+# Creates a database, if one does not exist
 def create_database(mydb, id):
     if (not database_exists(mydb, id)):
         mycursor = mydb.cursor(buffered=True)
         mycursor.execute("CREATE DATABASE {}".format(id))
 
+# Querries if a table already exists
 def table_exists(mydb, name):
     mycursor = mydb.cursor(buffered=True)
     mycursor.execute("SHOW TABLES")
@@ -48,6 +50,7 @@ def table_exists(mydb, name):
             return True
     return False
 
+# Creates a table, if one does not exist. Two options, emails table or votes table
 def create_table(mydb, name):
     mycursor = mydb.cursor(buffered=True)
     if (not table_exists(mydb, name)):
@@ -56,6 +59,7 @@ def create_table(mydb, name):
         elif (name  == 'votes'):
             mycursor.execute("CREATE TABLE votes (category VARCHAR(255), person VARCHAR(255), u_id VARCHAR(255))")
 
+# Check if an item of type and of value item
 def check_for_item(mydb, dbname, type, item):
     mycursor = mydb.cursor(buffered=True)
     sql = "SELECT * FROM {} WHERE {} ='{}'".format(dbname, type, item)
@@ -66,11 +70,13 @@ def check_for_item(mydb, dbname, type, item):
         return True
     return False
 
+# Drops, then recreates a table
 def reset_table(mydb, table):
     mycursor = mydb.cursor(buffered=True)
     mycursor.execute("DROP TABLE IF EXISTS {}".format(table))
     create_table(mydb, table)
 
+# Specifically designed to insert a student
 def insert_student(mydb, email):
     mycursor = mydb.cursor(buffered=True)
     if(not check_for_item(mydb, 'emails', 'email', email)):
@@ -86,9 +92,10 @@ def insert_student(mydb, email):
     else:
         return "ERROR"
 
+# Insert function specifically 
 def insert_vote(mydb, u_id, category, person):
     mycursor = mydb.cursor(buffered=True)
-    if(get_by_u_id(mydb, 'emails', u_id, 'voted') == 'False'):
+    if(get_by_u_id(mydb, 'emails', u_id, 'voted') == 'False'): # Make sure person is registered
         sql = "INSERT INTO votes (category, person, u_id) VALUES (%s, %s, %s)"
         val = ("{}".format(category), "{}".format(person), "{}".format(u_id))
         mycursor.execute(sql, val)
@@ -97,17 +104,20 @@ def insert_vote(mydb, u_id, category, person):
     else:
         return False
 
+# Check if there are enough arguments, for menu
 def check_args(actual, expected):
     if (actual == expected):
         return True
     else:
         return False
 
+# Setter for any database value, using u_id to query
 def set_by_u_id(mydb, table, u_id, type, val):
     mycursor = mydb.cursor()
     mycursor.execute("UPDATE {} SET {} = '{}' WHERE u_id = '{}'".format(table, type, val, u_id))
     mydb.commit()
 
+# getter for any database value, using u_id to query
 def get_by_u_id(mydb, table, u_id, type):
     mycursor = mydb.cursor()
     mycursor.execute("SELECT * FROM {} WHERE u_id='{}'".format(table, u_id))
@@ -124,8 +134,8 @@ def get_by_u_id(mydb, table, u_id, type):
 
 def main():
     load_dotenv()
-    data = str(sys.argv[1])
-    data = data.replace('[ ', '["')
+    data = str(sys.argv[1]) # get data from input
+    data = data.replace('[ ', '["') # Process it so that it will be accepted as json data
     data = data.replace(' ]', '"]')
     data = data.replace(' }', '"}')
     data = data.replace('{ ', '{"')
@@ -133,14 +143,13 @@ def main():
     data = data.replace(', ', ', "')
     data = data.replace(' :', '" :')
     data = data.replace('u_id" : ', 'u_id" : "')
-    
-    print(data)
 
-    res = json.loads(data)
+    res = json.loads(data) #load it as json data
     u_id = res["u_id"]
     mydb = connect_database('ctrl_a')
     create_table(mydb, 'votes')
     
+    # Parse the inputted json data, and insert into database
     for group in list(res):
         if (group != "u_id"):
             for item in res[group]:
@@ -148,7 +157,7 @@ def main():
                 if (result == False):
                     print("ERROR, already voted")
                     exit()
-    set_by_u_id(mydb, 'emails', u_id, 'voted', 'True')
+    set_by_u_id(mydb, 'emails', u_id, 'voted', 'True') # Set voted to true
     print("Vote Submitted Succesfully -> {}".format(data))
 
 
