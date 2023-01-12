@@ -2,7 +2,7 @@
 Electronic Election System for Ctrl-A
 status: Prototype, in development
 
-###### General Information
+### General Information
 
 This is a electornic election system built for the Ctrl-A club at the University of Waterloo.
 
@@ -24,7 +24,7 @@ $ pip install -r requirements.txt
 [with current prototype version, system is only functional on localhost]
 Use xampp to host the dynamic website and database
 
-###### json configuration
+### json configuration
 
 Before ballots can be distributed, they must be generated from a config file, written in json. Below is an example:
 
@@ -64,7 +64,7 @@ With this command, a Ballot.php will apear in this directory. Open this file in 
 
 Now, the ballot is ready!
 
-###### Script configurations
+### Script configurations
 
 In this current location (project folder, where README is located), create a .env file and fill in the following fields:
 ```
