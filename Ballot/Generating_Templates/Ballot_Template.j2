@@ -1,6 +1,6 @@
-{% macro generate_people(people, count) -%}
+{% macro generate_people(category, people) -%}
     {%- for per in people %}
-            <input type="checkbox" id="{{per}}" name="vote_{count}[]" value="{{per}}">
+            <input type="checkbox" id="{{per}}" name="{{category}}[]" value="{{per}}">
             <label for="{{per}}">Support {{per}}</label><br>
     {% endfor %}
 {%- endmacro -%}
@@ -11,12 +11,12 @@
     {% endfor %}
 {%- endmacro -%}
 
-{% macro generate_block(title, data, count) -%}
+{% macro generate_block(title, data) -%}
             <div>
                 <h3>{{title}} (Multi vote available)</h3>
     {{ generate_descriptions(data) }}
             </div>
-    {{ generate_people(data, count) }}
+    {{ generate_people(title, data) }}
 {%- endmacro -%}
 
 
@@ -34,10 +34,8 @@
         <h1>This is the ballot! Multiple Votes Allowed!</h1>
 
         <form action="Submit.php" method="post">
-        {% set counter = 0 -%}
         {%- for item in data %}
-            {{ generate_block(item, data[item], counter) }}
-            {% set counter = counter + 1 -%}
+            {{ generate_block(item, data[item]) }}
         {% endfor %}
 
             <br><br>

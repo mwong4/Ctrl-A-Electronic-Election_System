@@ -128,12 +128,11 @@ def main():
     print(data)
     data = data.replace('[ ', '["')
     data = data.replace(' ]', '"]')
-    data = data.replace('u_id : ', '"u_id" :"')
     data = data.replace(' }', '"}')
-    data = data.replace(' , ', '","')
-
-    for x in range(0, 9):
-        data = data.replace('vote_{}'.format(x), '"vote_{}"'.format(x))
+    data = data.replace('{ ', '{"')
+    data = data.replace(', ', ',"')
+    data = data.replace(' :', '" :')
+    data = data.replace('u_id" : ', 'u_id" : "')
 
     res = json.loads(data)
     u_id = res["u_id"]
@@ -148,7 +147,7 @@ def main():
                     print("ERROR, already voted")
                     exit()
     set_by_u_id(mydb, 'emails', u_id, 'voted', 'True')
-    print("Vote Submitted Succesfully")
+    print("Vote Submitted Succesfully -> {}".format(data))
 
 
 if __name__ == "__main__":
