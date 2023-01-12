@@ -6,6 +6,9 @@
 
 <body>
     <h1>Thank you for voting</h1>
+    <br>
+    <input type="button" onclick="window.location.href='http://localhost/Results/Display.php';" value="check out results" />
+    <br>
 </body>
 
 <?php

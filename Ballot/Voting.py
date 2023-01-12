@@ -125,14 +125,16 @@ def get_by_u_id(mydb, table, u_id, type):
 def main():
     load_dotenv()
     data = str(sys.argv[1])
-    print(data)
     data = data.replace('[ ', '["')
     data = data.replace(' ]', '"]')
     data = data.replace(' }', '"}')
     data = data.replace('{ ', '{"')
-    data = data.replace(', ', ',"')
+    data = data.replace(' , ', '","')
+    data = data.replace(', ', ', "')
     data = data.replace(' :', '" :')
     data = data.replace('u_id" : ', 'u_id" : "')
+    
+    print(data)
 
     res = json.loads(data)
     u_id = res["u_id"]

@@ -5,7 +5,7 @@
 </title>
 
 <body>
-    <h2>Please Enter Wat-Email. If valid, your ballot will be emailed to your Waterloo address.</h2>
+    <h2>Please Enter Wat-Email. If valid, your Ballot will be Emailed to your Waterloo Address. Please Check SPAM Folder</h2>
     <form action="Result.php" method="post"> 
         E-Mail: <input type="text" placeholder="jdoe@waterloo.ca" name="EMAIL" id="email "><br>
         <input type="submit" value="submit" name="SUBMIT">
