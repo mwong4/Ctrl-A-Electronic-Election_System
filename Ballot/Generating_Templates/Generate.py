@@ -5,6 +5,9 @@ import sys
 import os
 
 def main():
+    if (len(sys.argv) < 1):
+        print("No input file specified")
+        exit()
     source_location = sys.argv[1]
     source_file = open(str(source_location))
     data = json.load(source_file) # Load json data

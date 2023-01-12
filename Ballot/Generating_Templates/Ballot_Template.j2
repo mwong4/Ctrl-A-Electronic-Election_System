@@ -1,4 +1,4 @@
-{% generate section for the buttons %}
+{# generate section for the buttons #}
 {% macro generate_people(category, people) -%}
     {%- for per in people %}
             <input type="checkbox" id="{{per}}" name="{{category}}[]" value="{{per}}">
@@ -6,14 +6,14 @@
     {% endfor %}
 {%- endmacro -%}
 
-{% generate descriptions section %}
+{# generate descriptions section #}
 {% macro generate_descriptions(descriptions) -%}
     {%- for des in descriptions %}
                 <p>{{descriptions[des].description}}</p>
     {% endfor %}
 {%- endmacro -%}
 
-{% calls above two macros to generate repeating block %}
+{# calls above two macros to generate repeating block #}
 {% macro generate_block(title, data) -%}
             <div>
                 <h3>{{title}} (Multi vote available)</h3>

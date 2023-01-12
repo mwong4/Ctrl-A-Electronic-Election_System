@@ -1,5 +1,9 @@
+
+
+
 <?php
 
+    //HTML data (template)
     $orig_HTML = <<<EOD
 
     <!DOCTYPE html>
@@ -11,7 +15,10 @@
     <body>
         <h1>This is the ballot! Multiple Votes Allowed!</h1>
 
+        <!-- form that is submitted via post -->
         <form action="Submit.php" method="post">
+
+        <!-- repeating sections go here -->
             <div>
                 <h3>president (Multi vote available)</h3>
     
@@ -48,6 +55,7 @@
 
             <br><br>
             <label for="u_id">Your user id: </label>
+            <!-- u_id stored here, passed on to back end with post call -->
             <input type="text" id="u_id" name="u_id" value="null_id" readonly>
             <br><br>
             <input type="submit" value="Submit">
@@ -60,6 +68,7 @@
     </body>
     EOD;
 
+    // u_id from url embedded into template, then rendered
     $u_id = $_GET['u_id'];
     echo str_replace("null_id", $u_id, $orig_HTML);
 

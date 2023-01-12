@@ -140,6 +140,9 @@ def main():
 
     if (command == 'help'): #Displays list of available commands
         print("""
+        Command format:
+        py Database_commands.py [commands] [Arguments]
+
         $ create_database [db_id]
         $ create_table [db_id] [table_name]
         $ reset_table [db_id] [table_name]
@@ -189,7 +192,7 @@ def main():
                 mydb = connect_database(sys.argv[2])
                 print(count_all(mydb, sys.argv[3], sys.argv[4], sys.argv[5]))
             else:
-                print("No command found")
+                print("No command found, use $py Database_commands.py help for assistance")
         else:
             print("ERROR, password is incorrect")
 
