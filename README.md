@@ -77,7 +77,7 @@ SOURCE_FILE=<../Ballot/Generating_Templates/input.json>
 ```
 Reminder that the source_file is the same json file used in the ballot generation
 
-## Usgae
+## Usage
 
 There are 3 main components to the systme: The initial page, the ballot and the results page.
 
