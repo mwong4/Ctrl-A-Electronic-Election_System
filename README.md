@@ -74,6 +74,10 @@ APP_PASSWORD=<do not reply email password>
 CLI_PASSWORD=<set a password for the database commands>
 DB_PASSWORD=<fill in the database password configured on xampp, default is empty>
 SOURCE_FILE=<../Ballot/Generating_Templates/input.json>
+SENDER_EMAIL=<email being used to send ballots>
+HOST=<database ip>
+USER=<database user, default is root>
+PORT=<database port>
 ```
 Reminder that the source_file is the same json file used in the ballot generation
 
