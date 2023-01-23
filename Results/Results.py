@@ -7,7 +7,8 @@ import getpass
 import json
 
 #import database commands from respective class
-from Database_commands import *
+sys.path.append('../../Ctrl_A_EES')
+from Database_commands import connect_database, count_all
 
 def main():
     load_dotenv()

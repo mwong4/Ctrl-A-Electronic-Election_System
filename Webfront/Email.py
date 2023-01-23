@@ -12,7 +12,8 @@ import mysql.connector
 import uuid
 
 #import database commands from respective class
-import Database
+sys.path.append('../../Ctrl_A_EES')
+from Database_commands import connect_database, database_exists, create_database, table_exists, create_table, check_for_item, reset_table, insert_student 
 
 
 SUCCESS_RESPONSE = "Ballot has been succesfully sent. Please vote with link sent to: "

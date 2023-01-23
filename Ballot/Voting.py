@@ -6,7 +6,8 @@ import os
 import json
 
 #import database commands from respective class
-from Database_commands import *
+sys.path.append('../../Ctrl_A_EES')
+from Database_commands import connect_database, database_exists, create_database, table_exists, create_table, check_for_item, reset_table, insert_student, insert_vote, check_args, set_by_u_id, get_by_u_id
 
 def main():
     load_dotenv()

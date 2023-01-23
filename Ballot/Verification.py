@@ -5,7 +5,8 @@ from dotenv import load_dotenv
 import os
 
 #import database commands from respective class
-from Database_commands import *
+sys.path.append('../../Ctrl_A_EES')
+from Database_commands import connect_database, check_for_item, set_by_u_id, get_by_u_id
 
 def main():
     load_dotenv()
