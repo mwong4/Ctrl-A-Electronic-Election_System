@@ -1,31 +1,33 @@
 {# generate section for the buttons #}
 {% macro generate_people(category, people) -%}
     {%- for per in people %}
-            <input type="checkbox" id="{{per}}" name="{{category}}[]" value="{{per}}">
-            <label for="{{per}}">Support {{per}}</label><br>
+            <div class="center checkbox-wrapper-13">
+                <input type="checkbox" id="{{per}}" name="{{category}}[]" value="{{per}}">
+                <label for="{{per}}">Support {{per}}</label><br>
+            </div>
     {% endfor %}
 {%- endmacro -%}
 
 {# generate descriptions section #}
 {% macro generate_descriptions(descriptions) -%}
     {%- for des in descriptions %}
-                <p>{{descriptions[des].description}}</p>
+                    <p>{{descriptions[des].description}}</p>
     {% endfor %}
 {%- endmacro -%}
 
 {# calls above two macros to generate repeating block #}
 {% macro generate_block(title, data) -%}
-            <div>
-                <h3>{{title}} (Multi vote available)</h3>
+                <div>
+                    <h3>{{title}} (Multi vote available)</h3>
     {{ generate_descriptions(data) }}
-            </div>
+                </div>
     {{ generate_people(title, data) }}
 {%- endmacro -%}
 
 
 <?php
 
-    //HTML data (template)
+    
     $orig_HTML = <<<EOD
 
     <!DOCTYPE html>
@@ -58,6 +60,78 @@
         <br>
         <br>   
     </body>
+    EOD;
+
+
+    //HTML data (template)
+    $orig_HTML = <<<EOD
+    <!DOCTYPE html>
+
+    <html>
+    <!-- Header -->
+        <head>
+            <title>Ctrl A EES | Ballot</title>
+            
+            <link rel="stylesheet" type="text/css" href="../../styles.css">
+        </head>
+    
+      <!-- body -->
+        <body>
+      
+            <!-- header -->
+            <div class="secondaryHeader">
+    
+                <!-- the navigation bar -->
+                 <div class="topnav">
+                    <img src="../../logosquaresuqaredgooderWHITE.png" alt="temporary plant logo" height="42" width="42" id="logo">
+                    <div id="topGradient"></div>
+                    <a href="../../Webfront/Initial.php" id="homeButton">Submission</a>
+                    <a href="../../Results/Display.php">Results</a>
+                </div>
+                <h1 class="secondaryHeaderText">Election Ballot</h1>
+                    <div id="#secondaryMiddleGradient"></div>
+            </div>
+            
+    
+            <div id="bottomGradient"></div>
+            
+            <div class="headerTheme">
+                <h2 class="secondHeader"> Reminder: Multiple Vote Per Position Allowed/Encouraged! <h2>
+            </div>
+            
+            <br>
+            <div class="container">
+                <!-- form that is submitted via post -->
+                <form action="Submit.php" method="post">
+
+                <br><br>
+                <label for="u_id">Your user id: </label>
+                <!-- u_id stored here, passed on to back end with post call -->
+                <br><br>
+                <input type="text" id="u_id" name="u_id" value="null_id" readonly>
+                <br><br>
+        
+                    <!-- repeating sections go here -->
+                    {%- for item in data %}
+                        {{ generate_block(item, data[item]) }}
+                    {% endfor %}
+        
+                    <br><br>
+                    <input type="submit" value="Submit">
+                    <br><br>
+                    <form action="Submit.php" method="post">
+        
+                </form>
+            </div>
+    
+            <br><br><br>
+            <div class="footer">
+                Front-end/Back-end Developed by Wax <br>
+                Ctrl-A (University of Waterloo) Electronic Election System
+            </div>
+        </Body>
+    </html>
+    
     EOD;
 
     // u_id from url embedded into template, then rendered
