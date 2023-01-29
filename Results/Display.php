@@ -27,44 +27,67 @@
 		
 
 		<div id="bottomGradient"></div>
-		
-        <p class="regular">
+
+		<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+		<script>
+			Chart.defaults.font.size = 16;
+			Chart.defaults.backgroundColor = '#9BD0F5';
+			Chart.defaults.borderColor = '#acadad';
+			Chart.defaults.color = '#FFF';
+			Chart.defaults.family = 'Trebuchet MS';
+		</script>
+
+		<?php
+			$template = "
+				<div class='headerTheme'>
+					<h2 class='secondHeader'><h2>
+				</div>
+				<canvas id='chart_id#' style='width:100%;max-width:40%;margin:auto;'></canvas>
+				<script>
+				var xValues = [];
+				var yValues = [];
+				var color = '#fc9fad';
+				var barColors = [color, color, color, color, color, color, color, color, color, color, color, color, color, color, color, color, color, color];
+				var title = 'Votes';
+				new Chart('chart_id#', {type: 'bar',data: {labels: xValues, datasets: [{backgroundColor: barColors,data: yValues,label: title}]}});
+				</script>
+			";
+
+            $result = exec("python Results.py"); //calls back end to get current results, then displays them
+			$result = str_replace("'", "\"", $result);
+            $decoded_json = json_decode($result, false);
+			foreach($decoded_json as $key => $value) {
+				$output = $template;
+				$title = $key;
+				$people = "[";
+				$votes = "[";
+
+				foreach($value as $inner_key => $inner_value) {
+					$people = $people . "'" . $inner_key . "', ";
+					$votes = $votes . $inner_value . ", ";
+				}
+				$people = rtrim($people, ", ");
+				$votes = rtrim($votes, ", ");
+				$people = $people ."]";
+				$votes = $votes . "]";
+
+				$output = str_replace("<h2 class='secondHeader'><h2>", "<h2 class='secondHeader'>" . $title ."<h2>", $output);
+				$output = str_replace("chart_id#", "chart_id#" . $key, $output);
+				$output = str_replace("var xValues = [];", "var xValues = " . $people . ";", $output);
+				$output = str_replace("var yValues = [];", "var yValues = " . $votes . ";", $output);
+				echo $output;
+			}
+        ?>
+
+		<br>
+		<br>
+		<p class="regular">
           <?php
             $result = exec("python Results.py"); //calls back end to get current results, then displays them
             echo $result;
           ?>
 		</p>
-
-		<!-- Source: https://chartscss.org/charts/bar/ -->
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
-		<canvas id="myChart" style="width:100%;max-width:40%;margin:auto;"></canvas>
-		
-		<script>
-		var xValues = ["Italy", "France", "Spain", "USA", "Argentina"];
-		var yValues = [55, 49, 44, 24, 15];
-		var barColors = ["red", "green","blue","orange","brown"];
-
-		new Chart("myChart", {
-		type: "bar",
-		data: {
-			labels: xValues,
-			datasets: [{
-			backgroundColor: barColors,
-			data: yValues
-			}]
-		},
-		options: {
-			legend: {display: false},
-			title: {
-			display: true,
-			text: "World Wine Production 2018",
-			color: '#FFF'
-			}
-		}
-		});
-		</script>
         
-        <br><br><br>
         <div class="footer">
             Front-end/Back-end Developed by Wax <br>
             Ctrl-A (University of Waterloo) Electronic Election System
