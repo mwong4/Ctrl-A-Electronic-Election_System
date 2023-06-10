@@ -1,5 +1,10 @@
--Implement additional security via try catch
+-Release-Patch to ensure easy deployment
+    -Database
+    -Make everything run
+-Terraform automation?
+-Discord Bot
 -Improve Visuals
+-Extra Security
 
 
 -Beta testers
