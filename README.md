@@ -21,6 +21,15 @@ $ cd /directory/where/files/are/located
 $ pip install -r requirements.txt
 ```
 
+included in the home directory is "index.html". This redirects to Initial.php
+
+Move this file to the landing directory:
+
+```
+cd /<path>/Ctrl-A-Electronic-Election_System
+mv ./index.html ./../index.html
+```
+
 [with current prototype version, system is only functional on localhost]
 Use xampp to host the dynamic website and database
 
