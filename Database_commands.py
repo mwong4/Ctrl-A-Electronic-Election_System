@@ -177,6 +177,19 @@ def insert_vote(mydb, u_id, category, person):
     else:
         print("Success, vote added", file=sys.stderr)
 
+# For listing all items in a table
+def list_data(mydb, table):
+    mycursor = mydb.cursor(buffered=True)
+    mycursor.execute("SELECT * FROM {}".format(table))
+    try:
+        print("====================\nTables:", file=sys.stderr)
+        for item in mycursor:
+            print(str(item), file=sys.stderr)
+        print("====================", file=sys.stderr)
+        
+    except:
+        print("Could not print databses", file=sys.stderr)
+
 # Check if there are enough arguments, for menu
 def check_args(actual, expected):
     if (actual == expected):
@@ -237,6 +250,7 @@ def main():
         $ -C create_table -A [db_id] [table_name]
         $ -C reset_table -A [db_id] [table_name]
         $ -C insert_email -A [db_id] [email (single string)]
+        $ -C list_data -A [db_id] [table_name]
         $ -C set -A [db_id] [table_name] [u_id] [type] [val]
         $ -C get -A [db_id] [table_name] [u_id] [type]
         $ -C count -A [db_id] [table_name] [filter] [val]
@@ -285,6 +299,11 @@ def main():
                 exit()
             mydb = connect_database(args.arguments[0])
             id = insert_student(mydb, args.arguments[1])
+        elif (args.command == 'list_data'):
+            if not check_args(len(args.arguments), 2): 
+                exit()
+            mydb = connect_database(args.arguments[0])
+            list_data(mydb, args.arguments[1])
         elif (args.command == 'set'):
             if not check_args(len(args.arguments), 5): 
                 exit()
