@@ -4,6 +4,8 @@ import sys
 from dotenv import load_dotenv
 import os
 import getpass
+import argparse
+import textwrap
 
 # Connects to database, connecting to localhost by default
 def connect_database(database):
@@ -179,14 +181,32 @@ def count_all(mydb, table, category, person):
 
 def main():
     load_dotenv()
-    if (len(sys.argv) == 1): #  Check for existence of a command
-        print("ERROR, No command given", file=sys.stderr)
+    parser = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog=textwrap.dedent('''\
+        NOTE: Leave arguments to end
+
+        Commands:
+        $ create_database [db_id]
+        $ create_table [db_id] [table_name]
+        $ reset_table [db_id] [table_name]
+        $ insert_email [db_id] [email (single string)]
+        $ set [db_id] [table_name] [u_id] [type] [val]
+        $ get [db_id] [table_name] [u_id] [type]
+        $ count [db_id] [table_name] [filter] [val]
+        $ help
+        '''))
+    parser.add_argument("-C", "--command", help="Command", type=str)
+    parser.add_argument("-P", "--password", help="CLI Password", type=str)
+    parser.add_argument("-A", "--arguments", help="Arguments for Command", nargs='+', default=[])
+    args = parser.parse_args()
+
+    if (args.command == None): #  Check for existence of a command
+        print("ERROR, No command given. Try 'python Databse_command.py help' command.", file=sys.stderr)
         exit()
 
-    command = str(sys.argv[1]) #Grab command
     mydb = connect_database('ctrl_a') #Connect to database
 
-    if (command == 'help'): #Displays list of available commands
+    if (args.command == 'help'): #Displays list of available commands
         print("""
         Command format:
         py Database_commands.py [commands] [Arguments]
@@ -201,46 +221,49 @@ def main():
         $ help
         """)
     else:
-        passwd = getpass.getpass("Enter CLI Password: ") #Prompt for password
+        if (args.password == None):
+            passwd = getpass.getpass("Enter CLI Password: ") #Prompt for password
+        else:
+            passwd = args.password
         real_pass =  os.getenv('CLI_PASSWORD')
 
         if(passwd == real_pass): #executes the command based off command entered and parameters
-            if (command == 'create_database'):
-                if not check_args(len(sys.argv), 3): 
+            if (args.command == 'create_database'):
+                if not check_args(len(args.arguments), 1): 
                     exit()
-                create_database(mydb, sys.argv[2])
-            elif (command == 'create_table'):
-                if not check_args(len(sys.argv), 4): 
+                create_database(mydb, args.arguments[0])
+            elif (args.command == 'create_table'):
+                if not check_args(len(args.arguments), 2): 
                     exit()
-                mydb = connect_database(sys.argv[2])
-                create_table(mydb, sys.argv[3])
-            elif (command == 'reset_table'):
-                if not check_args(len(sys.argv), 4): 
+                mydb = connect_database(args.arguments[0])
+                create_table(mydb, args.arguments[1])
+            elif (args.command == 'reset_table'):
+                if not check_args(len(args.arguments), 2): 
                     exit()
-                mydb = connect_database(sys.argv[2])
-                reset_table(mydb, sys.argv[3])
-            elif (command == 'insert_email'):
-                if not check_args(len(sys.argv), 4): 
+                mydb = connect_database(args.arguments[0])
+                reset_table(mydb, args.arguments[1])
+            elif (args.command == 'insert_email'):
+                if not check_args(len(args.arguments), 2): 
                     exit()
-                mydb = connect_database(sys.argv[2])
-                id = insert_student(mydb, sys.argv[3])
-            elif (command == 'set'):
-                if not check_args(len(sys.argv), 7): 
+                mydb = connect_database(args.arguments[0])
+                id = insert_student(mydb, args.arguments[1])
+            elif (args.command == 'set'):
+                if not check_args(len(args.arguments), 5): 
                     exit()
-                mydb = connect_database(sys.argv[2])
-                set_by_u_id(mydb, sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6])
-            elif (command == 'get'):
-                if not check_args(len(sys.argv), 6): 
+                mydb = connect_database(args.arguments[0])
+                set_by_u_id(mydb, args.arguments[1], args.arguments[2], args.arguments[3], args.arguments[4])
+            elif (args.command == 'get'):
+                if not check_args(len(args.arguments), 4): 
                     exit()
-                mydb = connect_database(sys.argv[2])
-                print(get_by_u_id(mydb, sys.argv[3], sys.argv[4], sys.argv[5]))
-            elif (command == 'count'):
-                if not check_args(len(sys.argv), 6): 
+                mydb = connect_database(args.arguments[0])
+                print(get_by_u_id(mydb, args.arguments[1], args.arguments[2], args.arguments[3]))
+            elif (args.command == 'count'):
+                if not check_args(len(args.arguments), 4): 
                     exit()
-                mydb = connect_database(sys.argv[2])
-                print(count_all(mydb, sys.argv[3], sys.argv[4], sys.argv[5]))
+                mydb = connect_database(args.arguments[0])
+                print(count_all(mydb, args.arguments[1], args.arguments[2], args.arguments[3]))
             else:
-                print("No command found, use $py Database_commands.py help for assistance", file=sys.stderr)
+                print("No command found, use $py Database_commands.py -h for assistance", file=sys.stderr)
         else:
             print("ERROR, password is incorrect", file=sys.stderr)
 
