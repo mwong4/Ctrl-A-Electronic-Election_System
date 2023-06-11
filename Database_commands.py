@@ -28,6 +28,8 @@ def connect_database(database):
         return mydb
     except:
         print("Error, Could not connect to database", file=sys.stderr)
+    else:
+        print("Success, connected to database", file=sys.stderr)
 
 # Querries if a database already exists
 def database_exists(mydb, id):
@@ -50,6 +52,35 @@ def create_database(mydb, id):
             mycursor.execute("CREATE DATABASE {}".format(id))
     except:
         print("Error, Could not create database", file=sys.stderr)
+    else:
+        print("Success, database created", file=sys.stderr)
+
+# List all databases
+def list_databases():
+    mydb = connect_database("")
+    mycursor = mydb.cursor(buffered=True)
+    mycursor.execute("SHOW DATABASES")
+    try:
+        print("====================\nDatabases:", file=sys.stderr)
+        for item in mycursor:
+            print(str(item), file=sys.stderr)
+        print("====================", file=sys.stderr)
+        
+    except:
+        print("Could not print databses", file=sys.stderr)
+
+# List all tables in a database
+def list_tables(mydb):
+    mycursor = mydb.cursor(buffered=True)
+    mycursor.execute("SHOW TABLES")
+    try:
+        print("====================\nTables:", file=sys.stderr)
+        for item in mycursor:
+            print(str(item), file=sys.stderr)
+        print("====================", file=sys.stderr)
+        
+    except:
+        print("Could not print databses", file=sys.stderr)
 
 # Querries if a table already exists
 def table_exists(mydb, name):
@@ -66,6 +97,7 @@ def table_exists(mydb, name):
 
 # Creates a table, if one does not exist. Two options, emails table or votes table
 def create_table(mydb, name):
+    print(type(name))
     try:
         mycursor = mydb.cursor(buffered=True)
         if (not table_exists(mydb, name)):
@@ -73,8 +105,13 @@ def create_table(mydb, name):
                 mycursor.execute("CREATE TABLE emails (email VARCHAR(255), u_id VARCHAR(255), voted VARCHAR(255))")
             elif (name  == 'votes'):
                 mycursor.execute("CREATE TABLE votes (category VARCHAR(255), person VARCHAR(255), u_id VARCHAR(255))")
+            else:
+                print("Error, table name must be 'emails' or 'votes'", file=sys.stderr)
+                raise Exception("Error, table name must be 'emails' or 'votes'")
     except:
         print("Error, Could not create table", file=sys.stderr)
+    else:
+        print("Success, table created", file=sys.stderr)
 
 # Check if an item of type and of value item
 def check_for_item(mydb, dbname, type, item):
@@ -99,6 +136,8 @@ def reset_table(mydb, table):
         print("SUCCESS, {} resetted".format(table), file=sys.stderr)
     except:
         print("Error, Could not reset table", file=sys.stderr)
+    else:
+        print("Success, table reset", file=sys.stderr)
 
 # Specifically designed to insert a student
 def insert_student(mydb, email):
@@ -118,6 +157,8 @@ def insert_student(mydb, email):
             return "ERROR"
     except:
         print("Error, Could not insert student", file=sys.stderr)
+    else:
+        print("Success, student added", file=sys.stderr)
 
 # Insert function specifically 
 def insert_vote(mydb, u_id, category, person):
@@ -133,6 +174,8 @@ def insert_vote(mydb, u_id, category, person):
             return False
     except:
         print("Error, Could not insert vote", file=sys.stderr)
+    else:
+        print("Success, vote added", file=sys.stderr)
 
 # Check if there are enough arguments, for menu
 def check_args(actual, expected):
@@ -150,6 +193,8 @@ def set_by_u_id(mydb, table, u_id, type, val):
         mydb.commit()
     except:
         print("Error, Could not set item", file=sys.stderr)
+    else:
+        print("Success, uuid set", file=sys.stderr)
 
 # getter for any database value, using u_id to query
 def get_by_u_id(mydb, table, u_id, type):
@@ -186,14 +231,15 @@ def main():
         NOTE: Leave arguments to end
 
         Commands:
-        $ create_database [db_id]
-        $ create_table [db_id] [table_name]
-        $ reset_table [db_id] [table_name]
-        $ insert_email [db_id] [email (single string)]
-        $ set [db_id] [table_name] [u_id] [type] [val]
-        $ get [db_id] [table_name] [u_id] [type]
-        $ count [db_id] [table_name] [filter] [val]
-        $ help
+        $ -C list_databases
+        $ -C create_database -A [db_id]
+        $ -C list_tables -A [db_id]
+        $ -C create_table -A [db_id] [table_name]
+        $ -C reset_table -A [db_id] [table_name]
+        $ -C insert_email -A [db_id] [email (single string)]
+        $ -C set -A [db_id] [table_name] [u_id] [type] [val]
+        $ -C get -A [db_id] [table_name] [u_id] [type]
+        $ -C count -A [db_id] [table_name] [filter] [val]
         '''))
     parser.add_argument("-C", "--command", help="Command", type=str)
     parser.add_argument("-P", "--password", help="CLI Password", type=str)
@@ -201,71 +247,63 @@ def main():
     args = parser.parse_args()
 
     if (args.command == None): #  Check for existence of a command
-        print("ERROR, No command given. Try 'python Databse_command.py help' command.", file=sys.stderr)
+        print("ERROR, No command given. Try 'python Databse_command.py -h'.", file=sys.stderr)
         exit()
 
     mydb = connect_database('ctrl_a') #Connect to database
 
-    if (args.command == 'help'): #Displays list of available commands
-        print("""
-        Command format:
-        py Database_commands.py [commands] [Arguments]
-
-        $ create_database [db_id]
-        $ create_table [db_id] [table_name]
-        $ reset_table [db_id] [table_name]
-        $ insert_email [db_id] [email (single string)]
-        $ set [db_id] [table_name] [u_id] [type] [val]
-        $ get [db_id] [table_name] [u_id] [type]
-        $ count [db_id] [table_name] [filter] [val]
-        $ help
-        """)
+    if (args.password == None):
+        passwd = getpass.getpass("Enter CLI Password: ") #Prompt for password
     else:
-        if (args.password == None):
-            passwd = getpass.getpass("Enter CLI Password: ") #Prompt for password
-        else:
-            passwd = args.password
-        real_pass =  os.getenv('CLI_PASSWORD')
+        passwd = args.password
+    real_pass =  os.getenv('CLI_PASSWORD')
 
-        if(passwd == real_pass): #executes the command based off command entered and parameters
-            if (args.command == 'create_database'):
-                if not check_args(len(args.arguments), 1): 
-                    exit()
-                create_database(mydb, args.arguments[0])
-            elif (args.command == 'create_table'):
-                if not check_args(len(args.arguments), 2): 
-                    exit()
-                mydb = connect_database(args.arguments[0])
-                create_table(mydb, args.arguments[1])
-            elif (args.command == 'reset_table'):
-                if not check_args(len(args.arguments), 2): 
-                    exit()
-                mydb = connect_database(args.arguments[0])
-                reset_table(mydb, args.arguments[1])
-            elif (args.command == 'insert_email'):
-                if not check_args(len(args.arguments), 2): 
-                    exit()
-                mydb = connect_database(args.arguments[0])
-                id = insert_student(mydb, args.arguments[1])
-            elif (args.command == 'set'):
-                if not check_args(len(args.arguments), 5): 
-                    exit()
-                mydb = connect_database(args.arguments[0])
-                set_by_u_id(mydb, args.arguments[1], args.arguments[2], args.arguments[3], args.arguments[4])
-            elif (args.command == 'get'):
-                if not check_args(len(args.arguments), 4): 
-                    exit()
-                mydb = connect_database(args.arguments[0])
-                print(get_by_u_id(mydb, args.arguments[1], args.arguments[2], args.arguments[3]))
-            elif (args.command == 'count'):
-                if not check_args(len(args.arguments), 4): 
-                    exit()
-                mydb = connect_database(args.arguments[0])
-                print(count_all(mydb, args.arguments[1], args.arguments[2], args.arguments[3]))
-            else:
-                print("No command found, use $py Database_commands.py -h for assistance", file=sys.stderr)
+    if(passwd == real_pass): #executes the command based off command entered and parameters
+        if (args.command == 'list_databases'):
+            list_databases()
+        elif (args.command == 'list_tables'):
+            if not check_args(len(args.arguments), 1): 
+                exit()
+            mydb = connect_database(args.arguments[0])
+            list_tables(mydb)              
+        elif (args.command == 'create_database'):
+            if not check_args(len(args.arguments), 1): 
+                exit()
+            create_database(mydb, args.arguments[0])
+        elif (args.command == 'create_table'):
+            if not check_args(len(args.arguments), 2): 
+                exit()
+            mydb = connect_database(args.arguments[0])
+            create_table(mydb, args.arguments[1])
+        elif (args.command == 'reset_table'):
+            if not check_args(len(args.arguments), 2): 
+                exit()
+            mydb = connect_database(args.arguments[0])
+            reset_table(mydb, args.arguments[1])
+        elif (args.command == 'insert_email'):
+            if not check_args(len(args.arguments), 2): 
+                exit()
+            mydb = connect_database(args.arguments[0])
+            id = insert_student(mydb, args.arguments[1])
+        elif (args.command == 'set'):
+            if not check_args(len(args.arguments), 5): 
+                exit()
+            mydb = connect_database(args.arguments[0])
+            set_by_u_id(mydb, args.arguments[1], args.arguments[2], args.arguments[3], args.arguments[4])
+        elif (args.command == 'get'):
+            if not check_args(len(args.arguments), 4): 
+                exit()
+            mydb = connect_database(args.arguments[0])
+            print(get_by_u_id(mydb, args.arguments[1], args.arguments[2], args.arguments[3]))
+        elif (args.command == 'count'):
+            if not check_args(len(args.arguments), 4): 
+                exit()
+            mydb = connect_database(args.arguments[0])
+            print(count_all(mydb, args.arguments[1], args.arguments[2], args.arguments[3]))
         else:
-            print("ERROR, password is incorrect", file=sys.stderr)
+            print("No command found, use $py Database_commands.py -h for assistance", file=sys.stderr)
+    else:
+        print("ERROR, password is incorrect", file=sys.stderr)
 
 
 if __name__ == "__main__":
