@@ -9,14 +9,14 @@ This is a electornic election system built for the Ctrl-A club at the University
 ## Settup
 
 Prior to usage, a few configurations must be completed. First, ensure that python is installed.
-```
+```bash
 $ python -V
 > Python 3.10.5
 ```
 
 next, ensure that all pip requirements have been met
 
-```
+```bash
 $ cd /directory/where/files/are/located
 $ pip install -r requirements.txt
 ```
@@ -25,7 +25,7 @@ included in the home directory is "index.html". This redirects to Initial.php
 
 Move this file to the landing directory:
 
-```
+```bash
 cd /<path>/Ctrl-A-Electronic-Election_System
 mv ./index.html ./../index.html
 ```
@@ -37,7 +37,7 @@ Use xampp to host the dynamic website and database
 
 Before ballots can be distributed, they must be generated from a config file, written in json. Below is an example:
 
-```
+```json
 {
     "president": {
         "Joel": {
@@ -62,7 +62,7 @@ In the example, we have a position of "president" with two individuals running f
 Each individual also has a custom description. Please write this file, and ensure that it is in ./Ballot/Generating_Templates.
 
 Once ready, run the python script to generate the ballot:
-```
+```bash
 $ cd ./Ballot/Generating_Templates
 $ py Generate.py <input_file.json>
 > Generating...
@@ -76,7 +76,7 @@ Now, the ballot is ready!
 ### Script configurations
 
 In this current location (project folder, where README is located), create a .env file and fill in the following fields:
-```
+```bash
 .env
 
 APP_PASSWORD=<do not reply email password>
@@ -97,3 +97,19 @@ There are 3 main components to the systme: The initial page, the ballot and the 
 The initial page is where the end user, the voter, goes to submit their waterloo email in order to confirm their identity
 The ballot page is then sent to each user via email. This ballot double checks the user's identity, and allows them to vote
 The results page is where the user can go to check the present results of the election.
+
+[**Administration Terminal**]
+On the website, go to ../Ctrl-A-Electronic-Election_System/terminal.php in order to make direct commands to the database.
+```bash
+Commands:
+$ -C list_databases
+$ -C create_database -A [db_id]
+$ -C list_tables -A [db_id]
+$ -C create_table -A [db_id] [table_name]
+$ -C reset_table -A [db_id] [table_name]
+$ -C insert_email -A [db_id] [email (single string)]
+$ -C list_data -A [db_id] [table_name]
+$ -C set -A [db_id] [table_name] [u_id] [type] [val]
+$ -C get -A [db_id] [table_name] [u_id] [type]
+$ -C count -A [db_id] [table_name] [filter] [val]
+```
