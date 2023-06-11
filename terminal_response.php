@@ -29,22 +29,24 @@
 		<div id="bottomGradient"></div>
 		
 		<div class="headerTheme">
-			<h2 class="secondHeader"> Redirecting in 10 Seconds... <h2>
+			<h2 class="secondHeader"> Terminal Result <h2>
 		</div>
 		
         <p class="regular">
             <?php
                 //gets email from previous page, formwards this to back end to be processed
-                $input_pass = (array_key_exists('PASS', $_POST)) ? $_POST['PASS'] : "";
+                $input_pass = (array_key_exists('PASS', $_POST)) ? " -P " . $_POST['PASS'] : "";
                 $input_cmd = (array_key_exists('CMD', $_POST)) ? $_POST['CMD'] : "";
-                $result = shell_exec();
+				echo "Command: [python Database_commands.py" . $input_pass . " " . $input_cmd . " 2>&1] <br><br><br>";
+                $result = shell_exec("python Database_commands.py" . $input_pass . " " . $input_cmd . " 2>&1");
 
                 echo $result; //prints result/error message
 
                 $_POST['PASS'] = NULL;
-                $_POST['CMD'] = NULL;
             ?>
 		</p>
+
+		<input type="button" class="button" onclick="window.location.href='terminal.php';" value="Back" />
         
         <br><br><br>
         <div class="footer">

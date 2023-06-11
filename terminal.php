@@ -34,14 +34,28 @@
 		
         <br>
 		<div class="container">
-				<form action="terminal_response.php", method="post">
-		 
-				<label for="fname">Password</label>
+			<form action="terminal_response.php", method="post">
+				<label for="fname">CLI Password</label>
 				<input type="text" id="fname" name="PASS" placeholder="passwd">
-				<label for="fname">Command</label>
-				<input type="text" id="fname" name="CMD" placeholder="echo 'hello'">
+				<label for="fname">Command (-h for help)</label>
+				<input type="text" id="fname" name="CMD" placeholder="-C create_database -A test_db">
                 <input type="submit" value="submit" name="SUBMIT">
-			 </form>
+			</form>
+
+			<br>
+			<p>
+			Commands: <br>
+			$ -C list_databases <br>
+			$ -C create_database -A [db_id] <br>
+			$ -C list_tables -A [db_id] <br>
+			$ -C create_table -A [db_id] [table_name] <br>
+			$ -C reset_table -A [db_id] [table_name] <br>
+			$ -C insert_email -A [db_id] [email (single string)] <br>
+			$ -C list_data -A [db_id] [table_name] <br>
+			$ -C set -A [db_id] [table_name] [u_id] [type] [val] <br>
+			$ -C get -A [db_id] [table_name] [u_id] [type] <br>
+			$ -C count -A [db_id] [table_name] [filter] [val] <br>
+			</p>
 		</div>
 
         <br><br><br>
