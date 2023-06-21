@@ -17,14 +17,28 @@ Vagrant.configure("2") do |config|
   config.vm.provision "shell", reset: false, inline: <<-SHELL
     apt-get install net-tools -y
     apt-get install python3 -y
+    sudo apt-get update -y
     apt-get install python3-pip -y
     apt-get install git -y
     apt-get install apache2 -y
     apt-get install php -y
     sudo service apache2 restart
+    echo root:workstation | chpasswd
+    sed -re 's/^(\#*)([[:space:]]*)(PasswordAuthentication)([[:space:]]+)no/PasswordAuthentication yes/' -i.`date -I` /etc/ssh/sshd_config
+    sed -re 's/^(\#*)([[:space:]]*)(PermitRootLogin)([[:space:]]+)prohibit-password/PermitRootLogin yes/' -i /etc/ssh/sshd_config
+    sed -re 's/^(\#*)([[:space:]]*)(PermitRootLogin)([[:space:]]+)no/PermitRootLogin yes/' -i /etc/ssh/sshd_config
     cd /var/www/html && sudo git clone https://github.com/mwong4/Ctrl-A-Electronic-Election_System.git
+    pip3 install -r /var/www/html/Ctrl-A-Electronic-Election_System/requirements.txt
     sudo rm /var/www/html/index.html
     sudo mv /var/www/html/Ctrl-A-Electronic-Election_System/index.html /var/www/html/index.html
+  SHELL
+
+  config.vm.provision "shell", reset: false, inline: <<-SHELL
+    sudo apt-get install mysql-server -y
+  SHELL
+  config.vm.provision "shell", path: "install_sql.sh"
+
+  config.vm.provision "shell", reset: false, inline: <<-SHELL
     ifconfig | grep inet | grep netmask | awk '{print $2}'
   SHELL
 
