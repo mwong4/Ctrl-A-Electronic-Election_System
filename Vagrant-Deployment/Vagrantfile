@@ -1,6 +1,7 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
+
 Vagrant.configure("2") do |config|
   config.vm.box = "ubuntu/jammy64"
   config.vm.define "Ctrl-A-EES"
@@ -15,16 +16,42 @@ Vagrant.configure("2") do |config|
   config.vm.network "public_network"
 
   config.vm.provision "shell", reset: false, inline: <<-SHELL
-    apt-get install net-tools -y
-    apt-get install python3 -y
-    apt-get install python3-pip -y
-    apt-get install git -y
-    apt-get install apache2 -y
-    apt-get install php -y
+    sudo add-apt-repository universe
+    sudo apt-get install net-tools -y
+    sudo apt-get install python3 -y
+    sudo apt-get install python3-pip -y
+    pip install pkgconfig
+    sudo apt-get install pkg-config -y
+    sudo apt-get install python3-dev default-libmysqlclient-dev build-essential -y
+    pip install Jinja2
+    pip install mysql
+    pip install mysql-connector-python
+    pip install python-dotenv
+    pip install pandas
+    sudo apt-get update -y
+    sudo apt-get install git -y
+    sudo apt-get install apache2 -y
+    sudo apt-get install php -y
+    sudo apt-get install python3-dev default-libmysqlclient-dev build-essential -y
     sudo service apache2 restart
+    echo root:workstation | chpasswd
+    sed -re 's/^(\#*)([[:space:]]*)(PasswordAuthentication)([[:space:]]+)no/PasswordAuthentication yes/' -i.`date -I` /etc/ssh/sshd_config
+    sed -re 's/^(\#*)([[:space:]]*)(PermitRootLogin)([[:space:]]+)prohibit-password/PermitRootLogin yes/' -i /etc/ssh/sshd_config
+    sed -re 's/^(\#*)([[:space:]]*)(PermitRootLogin)([[:space:]]+)no/PermitRootLogin yes/' -i /etc/ssh/sshd_config
     cd /var/www/html && sudo git clone https://github.com/mwong4/Ctrl-A-Electronic-Election_System.git
+    pip3 install -r /var/www/html/Ctrl-A-Electronic-Election_System/requirements.txt
     sudo rm /var/www/html/index.html
     sudo mv /var/www/html/Ctrl-A-Electronic-Election_System/index.html /var/www/html/index.html
+  SHELL
+
+  config.vm.provision "shell", reset: false, inline: <<-SHELL
+    sudo apt update  
+    sudo apt-get install mysql-server -y
+    sudo systemctl start mysql.service
+  SHELL
+  config.vm.provision "shell", path: "install_sql.sh"
+
+  config.vm.provision "shell", reset: false, inline: <<-SHELL
     ifconfig | grep inet | grep netmask | awk '{print $2}'
   SHELL
 
