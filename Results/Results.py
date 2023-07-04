@@ -7,7 +7,7 @@ import getpass
 import json
 
 #import database commands from respective class
-sys.path.append('../../Ctrl_A_EES')
+sys.path.append('../')
 from Database_commands import connect_database, count_all
 
 def main():

@@ -12,7 +12,7 @@ import mysql.connector
 import uuid
 
 #import database commands from respective class
-sys.path.append('../../Ctrl_A_EES')
+sys.path.append('../')
 from Database_commands import connect_database, database_exists, create_database, table_exists, create_table, check_for_item, reset_table, insert_student 
 
 
