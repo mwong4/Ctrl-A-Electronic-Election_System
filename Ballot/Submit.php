@@ -32,7 +32,7 @@
             $post_results = $_POST;
             $json_encoded = json_encode($post_results);
             $escaped_json = escapeshellarg($json_encoded);
-            $command = escapeshellcmd("py Voting.py $escaped_json");
+            $command = escapeshellcmd("python Voting.py $escaped_json");
             $result = exec($command); // execute back end, passing on user data
 
             echo $result;
