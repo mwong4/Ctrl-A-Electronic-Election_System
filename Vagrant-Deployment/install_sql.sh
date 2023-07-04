@@ -7,7 +7,6 @@ email=donotreply.ctrla@gmail.com
 email_passwd=<email_passwd>
 
 
-
 # Make sure that NOBODY can access the server without a password
 mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '$db_passwd';"
 # Kill the anonymous users
@@ -17,6 +16,8 @@ mysql --user=root --password=$db_passwd -e "FLUSH PRIVILEGES"
 # Any subsequent tries to run queries this way will get access denied because lack of usr/pwd param
 # Create ctrl-a database
 mysql --user=root --password=$db_passwd -e  "CREATE DATABASE ctrl_a"
+
+addr=`ifconfig | grep 192 | grep inet | grep netmask | awk '{print $2}'`
 
 # Set up env file
 cat << EOF > /var/www/html/Ctrl-A-Electronic-Election_System/.env 
@@ -28,4 +29,5 @@ SENDER_EMAIL=$email
 HOST=localhost
 USER=root
 PORT=3306
+ADDR=$addr
 EOF

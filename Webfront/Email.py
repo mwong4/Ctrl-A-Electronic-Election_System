@@ -58,16 +58,17 @@ def main():
                     message["Subject"] = "Ctrl-A Election Ballot"
                     message["From"] = sender
                     message["To"] = email
+                    addr=os.getenv('ADDR')
                     html = """\
                     <html>
                         <body>
                             <p>Subject: Ctrl-A Election Ballot<br>
                             This is your custom url to the election site:<br>
-                            <a href="http://localhost/Ballot/Ballot_Verification.php?u_id={}">http://localhost/Ballot/Ballot_Verification.php?u_id={}</a> 
+                            <a href="http://{}/Ballot/Ballot_Verification.php?u_id={}">http://localhost/Ballot/Ballot_Verification.php?u_id={}</a> 
                             </p>
                         </body>
                     </html>
-                    """.format(id_code, id_code) #Important! The above has the email with the u_id embedded in the URL
+                    """.format(addr, id_code, id_code) #Important! The above has the email with the u_id embedded in the URL
                     package = MIMEText(html, "html")
                     message.attach(package)
 
