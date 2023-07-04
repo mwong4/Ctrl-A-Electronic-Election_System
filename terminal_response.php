@@ -37,8 +37,8 @@
                 //gets email from previous page, formwards this to back end to be processed
                 $input_pass = (array_key_exists('PASS', $_POST)) ? " -P " . $_POST['PASS'] : "";
                 $input_cmd = (array_key_exists('CMD', $_POST)) ? $_POST['CMD'] : "";
-				echo "Command: [python3 Database_commands.py" . $input_pass . " " . $input_cmd . " 2>&1] <br><br><br>";
-                $result = shell_exec("python3 Database_commands.py" . $input_pass . " " . $input_cmd . " 2>&1");
+				echo "Command: [python Database_commands.py" . $input_pass . " " . $input_cmd . " 2>&1] <br><br><br>";
+                $result = shell_exec("python Database_commands.py" . $input_pass . " " . $input_cmd . " 2>&1");
 
                 echo $result; //prints result/error message
 
