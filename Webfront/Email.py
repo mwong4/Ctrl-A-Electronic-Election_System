@@ -64,11 +64,11 @@ def main():
                         <body>
                             <p>Subject: Ctrl-A Election Ballot<br>
                             This is your custom url to the election site:<br>
-                            <a href="http://{}/Ballot/Ballot_Verification.php?u_id={}">http://localhost/Ballot/Ballot_Verification.php?u_id={}</a> 
+                            <a href="http://{}/Ctrl-A-Electronic-Election_System/Ballot/Ballot_Verification.php?u_id={}">http://{}/Ctrl-A-Electronic-Election_System/Ballot/Ballot_Verification.php?u_id={}</a> 
                             </p>
                         </body>
                     </html>
-                    """.format(addr, id_code, id_code) #Important! The above has the email with the u_id embedded in the URL
+                    """.format(addr, id_code, addr, id_code) #Important! The above has the email with the u_id embedded in the URL
                     package = MIMEText(html, "html")
                     message.attach(package)
 
