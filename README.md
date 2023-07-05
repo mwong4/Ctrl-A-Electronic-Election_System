@@ -6,6 +6,8 @@ status: Prototype, in development
 
 This is a electornic election system built for the Ctrl-A club at the University of Waterloo.
 
+**NOTE**: For local testing, you can refer to the README in the Vagrant-Deployment folder.
+
 ## Settup
 
 Prior to usage, a few configurations must be completed. First, ensure that python is installed.
