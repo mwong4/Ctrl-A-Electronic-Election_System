@@ -1,6 +1,6 @@
 # Ctrl-A-EES - Vagrant Usage
 
-A quick guide on how to use vagrant for local deployment of Ctrl-A-EES
+A quick guide on how to use Vagrant for local deployment of Ctrl-A-EES
 
 ## Usage
 

@@ -4,13 +4,13 @@ status: Prototype, in development
 
 ### General Information
 
-This is a electornic election system built for the Ctrl-A club at the University of Waterloo.
+This is an electornic election system built for the Ctrl-A club at the University of Waterloo.
 
 **NOTE**: For local testing, you can refer to the README in the Vagrant-Deployment folder.
 
 ## Settup
 
-Prior to usage, a few configurations must be completed. First, ensure that python is installed.
+Before usage, a few configurations must be completed. First, ensure that Python is installed.
 ```bash
 $ python -V
 > Python 3.10.5
@@ -32,8 +32,8 @@ cd /<path>/Ctrl-A-Electronic-Election_System
 mv ./index.html ./../index.html
 ```
 
-[with current prototype version, system is only functional on localhost]
-Use xampp to host the dynamic website and database
+[with the current prototype version, the system is only functional on localhost]
+Use xampp or the Vagrant-Deployment in order to test.
 
 ### json configuration
 
@@ -60,10 +60,10 @@ Before ballots can be distributed, they must be generated from a config file, wr
 }
 ```
 
-In the example, we have a position of "president" with two individuals running for the position. "Treasurer" has 1 person running and "Promotional Manager" has none.
+In the example, we have the position of "president" with two individuals running for the position. "Treasurer" has 1 person running and "Promotional Manager" has none.
 Each individual also has a custom description. Please write this file, and ensure that it is in ./Ballot/Generating_Templates.
 
-Once ready, run the python script to generate the ballot:
+Once ready, run the Python script to generate the ballot:
 ```bash
 $ cd ./Ballot/Generating_Templates
 $ py Generate.py <input_file.json>
@@ -71,7 +71,7 @@ $ py Generate.py <input_file.json>
 > Ballot generated!
 ```
 
-With this command, a Ballot.php will apear in this directory. Open this file in a browser to confirm the layout is correct, then move the file to ./Ballot
+With this command, a Ballot.php will appear in this directory. Open this file in a browser to confirm the layout is correct, then move the file to ./Ballot
 
 Now, the ballot is ready!
 
@@ -83,25 +83,25 @@ In this current location (project folder, where README is located), create a .en
 
 APP_PASSWORD=<do not reply email password>
 CLI_PASSWORD=<set a password for the database commands>
-DB_PASSWORD=<fill in the database password configured on xampp, default is empty>
+DB_PASSWORD=<fill in the database password>
 SOURCE_FILE=<../Ballot/Generating_Templates/input.json>
 SENDER_EMAIL=<email being used to send ballots>
 HOST=<database ip>
 USER=<database user, default is root>
 PORT=<database port>
 ```
-Reminder that the source_file is the same json file used in the ballot generation
+A reminder that the source_file is the same json file used in the ballot generation
 
 ## Usage
 
-There are 3 main components to the systme: The initial page, the ballot and the results page.
+There are 3 main components to the system: The initial page, the ballot, and the results page.
 
-The initial page is where the end user, the voter, goes to submit their waterloo email in order to confirm their identity
-The ballot page is then sent to each user via email. This ballot double checks the user's identity, and allows them to vote
+The initial page is where the end user, the voter, goes to submit their Waterloo email to confirm their identity
+The ballot page is then sent to each user via email. This ballot double-checks the user's identity and allows them to vote
 The results page is where the user can go to check the present results of the election.
 
 [**Administration Terminal**]
-On the website, go to ../Ctrl-A-Electronic-Election_System/terminal.php in order to make direct commands to the database.
+On the website, go to ../Ctrl-A-Electronic-Election_System/terminal.php to make direct commands to the database.
 ```bash
 Commands:
 $ -C list_databases
