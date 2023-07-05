@@ -13,7 +13,8 @@ def main():
     load_dotenv()
     try:
         data = str(sys.argv[1]) # get data from input
-        data = data.replace('[ ', '["') # Process it so that it will be accepted as json data
+        data = data.replace('\\', '') # Process it so that it will be accepted as json data
+        data = data.replace('[ ', '["')
         data = data.replace(' ]', '"]')
         data = data.replace(' }', '"}')
         data = data.replace('{ ', '{"')
