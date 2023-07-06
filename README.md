@@ -10,6 +10,8 @@ This is an electornic election system built for the Ctrl-A club at the Universit
 
 ## Settup
 
+This is the **manual instalation** of Ctrl-A EES, for an local **automated solution, refer to the Vagrant-Deployment** folder's README.
+
 Before usage, a few configurations must be completed. First, ensure that Python is installed.
 ```bash
 $ python -V
